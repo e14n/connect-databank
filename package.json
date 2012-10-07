@@ -1,0 +1,35 @@
+{
+    "name": "connect-databank",
+    "version": "0.1.0-alpha.1",
+    "author": "Evan Prodromou <evan@e14n.com>",
+    "description": "Use any databank driver as a store for connect sessions",
+    "scripts": {
+        "test": "vows --spec --isolate test/*-test.js"
+    },
+    "main": "./lib/store",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/evanp/connect-databank.git"
+    },
+    "keywords": [
+        "connect",
+        "session",
+        "databank"
+    ],
+    "dependencies" : {
+        "connect": "1.8.x",
+	"databank" :  "0.14.x"
+    },
+    "devDependencies": {
+        "vows"    :  "0.6.x",
+    },  
+    "licenses": [
+        {
+            "type": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    ],
+    "engines": {
+        "node": ">=0.6"
+    }
+}
