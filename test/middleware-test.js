@@ -30,6 +30,26 @@ var methodContext = function(name) {
     };
 };
 
+var lengthContext = function(cnt) {
+    return {
+        topic: function(store) {
+            store.length(this.callback);
+        },
+        "it works": function(err, n) {
+            assert.ifError(err);
+        },
+        "it returns a number": function(err, n) {
+            assert.ifError(err);
+            assert.isNumber(n);
+        },
+        "it returns the right number": function(err, n) {
+            assert.ifError(err);
+            assert.isNumber(n);
+            assert.equal(n, cnt);
+        }
+    };
+};
+
 var makeStore = function(DatabankStore) {
     var callback = this.callback,
         db = Databank.get("memory", {});
@@ -141,24 +161,7 @@ suite.addBatch({
                         assert.isEmpty(sessions);
                     }
                 },
-                "and we get length() in an empty store": {
-                    topic: function(store) {
-                        var callback = this.callback;
-                        store.length(callback);
-                    },
-                    "it works": function(err, count) {
-                        assert.ifError(err);
-                    },
-                    "it returns a number": function(err, count) {
-                        assert.ifError(err);
-                        assert.isNumber(count);
-                    },
-                    "it returns zero": function(err, count) {
-                        assert.ifError(err);
-                        assert.isNumber(count);
-                        assert.equal(count, 0);
-                    }
-                }
+                "and we get length() in an empty store": lengthContext(0)
             }
         }
     }
@@ -287,23 +290,7 @@ suite.addBatch({
                             assert.isFalse(session.cookie.expires);
                         }
                     },
-                    "and we get the length()": {
-                        topic: function(store) {
-                            store.length(this.callback);
-                        },
-                        "it works": function(err, n) {
-                            assert.ifError(err);
-                        },
-                        "it returns a number": function(err, n) {
-                            assert.ifError(err);
-                            assert.isNumber(n);
-                        },
-                        "it returns one": function(err, n) {
-                            assert.ifError(err);
-                            assert.isNumber(n);
-                            assert.equal(n, 1);
-                        }
-                    }
+                    "and we get the length()": lengthContext(1) 
                 }
             }
         }
@@ -427,7 +414,8 @@ suite.addBatch({
                                 assert.isFalse(session.cookie.expires);
                             }
                         }
-                    }
+                    },
+                    "and we get the length()": lengthContext(1000) 
                 }
             }
         }
