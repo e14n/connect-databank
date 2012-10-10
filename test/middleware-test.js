@@ -149,6 +149,39 @@ suite.addBatch({
                         assert.equal(count, 0);
                     }
                 }
+            },
+            "and we instantiate another store": {
+                topic: function(DatabankStore) {
+                    var callback = this.callback,
+                        db = Databank.get("memory", {});
+
+                    db.connect({}, function(err) {
+                        var store;
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            try {
+                                store = new DatabankStore(db);
+                                callback(null, store);
+                            } catch (e) {
+                                callback(e, null);
+                            }
+                        }
+                    });
+                },
+                "it works": function(err, store) {
+                    assert.ifError(err);
+                    assert.isObject(store);
+                },
+                "and we clear the empty store": {
+                    topic: function(store) {
+                        var callback = this.callback;
+                        store.clear(callback);
+                    },
+                    "it works": function(err) {
+                        assert.ifError(err);
+                    }
+                }
             }
         }
     }
