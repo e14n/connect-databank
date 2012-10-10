@@ -29,6 +29,31 @@ var methodContext = function(name) {
     };
 };
 
+var makeStore = function(DatabankStore) {
+    var callback = this.callback,
+        db = Databank.get("memory", {});
+
+    db.connect({}, function(err) {
+        var store;
+        if (err) {
+            callback(err, null);
+        } else {
+            try {
+                store = new DatabankStore(db);
+                callback(null, store);
+            } catch (e) {
+                callback(e, null);
+            }
+        }
+    });
+};
+
+var breakStore = function(store) {
+    if (store && store.bank && store.bank.disconnect) {
+        store.bank.disconnect(function(err) {});
+    }
+};
+
 var suite = vows.describe("store module interface");
 
 suite.addBatch({
@@ -48,24 +73,8 @@ suite.addBatch({
                 assert.isFunction(DatabankStore);
             },
             "and we instantiate a store": {
-                topic: function(DatabankStore) {
-                    var callback = this.callback,
-                        db = Databank.get("memory", {});
-
-                    db.connect({}, function(err) {
-                        var store;
-                        if (err) {
-                            callback(err, null);
-                        } else {
-                            try {
-                                store = new DatabankStore(db);
-                                callback(null, store);
-                            } catch (e) {
-                                callback(e, null);
-                            }
-                        }
-                    });
-                },
+                topic: makeStore,
+                teardown: breakStore,
                 "it works": function(err, store, DatabankStore) {
                     assert.ifError(err);
                     assert.isObject(store);
@@ -149,26 +158,30 @@ suite.addBatch({
                         assert.equal(count, 0);
                     }
                 }
+            }
+        }
+    }
+});
+
+suite.addBatch({
+    "when we require the connect-databank module": {
+        topic: function() {
+            return require("../lib/connect-databank");
+        },
+        "it works": function(middleware) {
+            assert.isFunction(middleware);
+        },
+        "and we apply it to the connect module": {
+            topic: function(middleware) {
+                var connect = require("connect");
+                return middleware(connect);
+            },
+            "it works": function(DatabankStore) {
+                assert.isFunction(DatabankStore);
             },
             "and we instantiate another store": {
-                topic: function(DatabankStore) {
-                    var callback = this.callback,
-                        db = Databank.get("memory", {});
-
-                    db.connect({}, function(err) {
-                        var store;
-                        if (err) {
-                            callback(err, null);
-                        } else {
-                            try {
-                                store = new DatabankStore(db);
-                                callback(null, store);
-                            } catch (e) {
-                                callback(e, null);
-                            }
-                        }
-                    });
-                },
+                topic: makeStore,
+                teardown: breakStore,
                 "it works": function(err, store) {
                     assert.ifError(err);
                     assert.isObject(store);
@@ -187,6 +200,48 @@ suite.addBatch({
     }
 });
 
+suite.addBatch({
+    "when we require the connect-databank module": {
+        topic: function() {
+            return require("../lib/connect-databank");
+        },
+        "it works": function(middleware) {
+            assert.isFunction(middleware);
+        },
+        "and we apply it to the connect module": {
+            topic: function(middleware) {
+                var connect = require("connect");
+                return middleware(connect);
+            },
+            "it works": function(DatabankStore) {
+                assert.isFunction(DatabankStore);
+            },
+            "and we instantiate yet another store": {
+                topic: makeStore,
+                teardown: breakStore,
+                "it works": function(err, store) {
+                    assert.ifError(err);
+                    assert.isObject(store);
+                },
+                "and we set() a new session": {
+                    topic: function(store) {
+                        var callback = this.callback,
+                            session = {
+                                cookie: {
+                                    expires: false
+                                },
+                                name: "Curly"
+                            };
+
+                        store.set("VALID1", session, callback); 
+                    },
+                    "it works": function(err) {
+                        assert.ifError(err);
+                    }
+                }
+            }
+        }
+    }
+});
+
 suite["export"](module);
-
-
