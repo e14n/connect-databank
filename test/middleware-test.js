@@ -353,6 +353,37 @@ suite.addBatch({
                                 assert.isFalse(session.cookie.expires);
                             }
                         }
+                    },
+                    "and we get all sessions": {
+                        topic: function(store) {
+                            store.all(this.callback);
+                        },
+                        "it works": function(err, sessions) {
+                            assert.ifError(err);
+                        },
+                        "it returns an array of objects": function(err, sessions) {
+                            var i;
+                            assert.ifError(err);
+                            assert.isArray(sessions);
+                            assert.lengthOf(sessions, 1000);
+                            for (i = 0; i < 1000; i++) {
+                                assert.isObject(sessions[i]);
+                            }
+                        },
+                        "it returns the right data": function(err, sessions) {
+                            var i, session;
+                            assert.ifError(err);
+                            for (i = 0; i < 1000; i++) {
+                                session = sessions[i];
+                                assert.isObject(session);
+                                assert.include(session, "number");
+                                assert.equal(session.number, i);
+                                assert.include(session, "cookie");
+                                assert.isObject(session.cookie);
+                                assert.include(session.cookie, "expires");
+                                assert.isFalse(session.cookie.expires);
+                            }
+                        }
                     }
                 }
             }
