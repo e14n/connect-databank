@@ -422,4 +422,89 @@ suite.addBatch({
     }
 });
 
+suite.addBatch({
+    "when we require the connect-databank module": {
+        topic: function() {
+            return require("../lib/connect-databank");
+        },
+        "it works": function(middleware) {
+            assert.isFunction(middleware);
+        },
+        "and we apply it to the connect module": {
+            topic: function(middleware) {
+                var connect = require("connect");
+                return middleware(connect);
+            },
+            "it works": function(DatabankStore) {
+                assert.isFunction(DatabankStore);
+            },
+            "and we instantiate yet another store": {
+                topic: makeStore,
+                teardown: breakStore,
+                "it works": function(err, store) {
+                    assert.ifError(err);
+                    assert.isObject(store);
+                },
+                "and we set() a whole bunch of sessions": {
+                    topic: function(store) {
+                        var callback = this.callback;
+
+                        Step(
+                            function() {
+                                var i, group = this.group();
+
+                                for (i = 0; i < 1000; i++) {
+                                    store.set("MORE"+i, {cookie: {expires: false}, number: i}, group()); 
+                                }
+                            },
+                            function(err) {
+                                callback(err);
+                            }
+                        );
+                    },
+                    "it works": function(err) {
+                        assert.ifError(err);
+                    },
+                    "and we destroy() the same sessions": {
+                        topic: function(store) {
+                            var callback = this.callback;
+
+                            Step(
+                                function() {
+                                    var i, group = this.group();
+
+                                    for (i = 0; i < 1000; i++) {
+                                        store.destroy("MORE"+i, group()); 
+                                    }
+                                },
+                                function(err) {
+                                    callback(err);
+                                }
+                            );
+                        },
+                        "it works": function(err) {
+                            assert.ifError(err);
+                        },
+                        "and we get all sessions": {
+                            topic: function(store) {
+                                store.all(this.callback);
+                            },
+                            "it works": function(err, sessions) {
+                                assert.ifError(err);
+                            },
+                            "it returns an array of objects": function(err, sessions) {
+                                var i;
+                                assert.ifError(err);
+                                assert.isArray(sessions);
+                                assert.lengthOf(sessions, 0);
+                            }
+                        },
+                        "and we get the length()": lengthContext(0) 
+                    }
+                }
+            }
+        }
+    }
+});
+
 suite["export"](module);
