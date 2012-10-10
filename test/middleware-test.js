@@ -112,6 +112,42 @@ suite.addBatch({
                     "it works": function(err) {
                         assert.ifError(err);
                     }
+                },
+                "and we get all() in an empty store": {
+                    topic: function(store) {
+                        var callback = this.callback;
+                        store.all(callback);
+                    },
+                    "it works": function(err, sessions) {
+                        assert.ifError(err);
+                    },
+                    "it returns an array": function(err, sessions) {
+                        assert.ifError(err);
+                        assert.isArray(sessions);
+                    },
+                    "it returns an empty array": function(err, sessions) {
+                        assert.ifError(err);
+                        assert.isArray(sessions);
+                        assert.isEmpty(sessions);
+                    }
+                },
+                "and we get length() in an empty store": {
+                    topic: function(store) {
+                        var callback = this.callback;
+                        store.length(callback);
+                    },
+                    "it works": function(err, count) {
+                        assert.ifError(err);
+                    },
+                    "it returns a number": function(err, count) {
+                        assert.ifError(err);
+                        assert.isNumber(count);
+                    },
+                    "it returns zero": function(err, count) {
+                        assert.ifError(err);
+                        assert.isNumber(count);
+                        assert.equal(count, 0);
+                    }
                 }
             }
         }
