@@ -6,7 +6,7 @@
     "scripts": {
         "test": "vows --spec --isolate test/*-test.js"
     },
-    "main": "./lib/store",
+    "main": "./lib/connect-databank",
     "repository": {
         "type": "git",
         "url": "https://github.com/evanp/connect-databank.git"
@@ -17,11 +17,12 @@
         "databank"
     ],
     "dependencies" : {
-        "connect": "1.8.x",
-	"databank" :  "0.14.x"
+        "step": "0.0.x",
+	"databank":  "0.14.x"
     },
     "devDependencies": {
-        "vows"    :  "0.6.x",
+        "vows":  "0.6.x",
+        "connect": "1.8.x"
     },  
     "licenses": [
         {
