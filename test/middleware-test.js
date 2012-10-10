@@ -237,6 +237,28 @@ suite.addBatch({
                     },
                     "it works": function(err) {
                         assert.ifError(err);
+                    },
+                    "and we get the same session": {
+                        topic: function(store) {
+                            store.get("VALID1", this.callback);
+                        },
+                        "it works": function(err, session) {
+                            assert.ifError(err);
+                        },
+                        "it returns an object": function(err, session) {
+                            assert.ifError(err);
+                            assert.isObject(session);
+                        },
+                        "it returns the right data": function(err, session) {
+                            assert.ifError(err);
+                            assert.isObject(session);
+                            assert.include(session, "name");
+                            assert.equal(session.name, "Curly");
+                            assert.include(session, "cookie");
+                            assert.isObject(session.cookie);
+                            assert.include(session.cookie, "expires");
+                            assert.isFalse(session.cookie.expires);
+                        }
                     }
                 }
             }
