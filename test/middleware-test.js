@@ -260,6 +260,49 @@ suite.addBatch({
                             assert.include(session.cookie, "expires");
                             assert.isFalse(session.cookie.expires);
                         }
+                    },
+                    "and we get all sessions": {
+                        topic: function(store) {
+                            store.all(this.callback);
+                        },
+                        "it works": function(err, sessions) {
+                            assert.ifError(err);
+                        },
+                        "it returns an array": function(err, sessions) {
+                            assert.ifError(err);
+                            assert.isArray(sessions);
+                        },
+                        "it returns the right data": function(err, sessions) {
+                            var session;
+                            assert.ifError(err);
+                            assert.isArray(sessions);
+                            assert.lengthOf(sessions, 1);
+                            session = sessions[0];
+                            assert.isObject(session);
+                            assert.include(session, "name");
+                            assert.equal(session.name, "Curly");
+                            assert.include(session, "cookie");
+                            assert.isObject(session.cookie);
+                            assert.include(session.cookie, "expires");
+                            assert.isFalse(session.cookie.expires);
+                        }
+                    },
+                    "and we get the length()": {
+                        topic: function(store) {
+                            store.length(this.callback);
+                        },
+                        "it works": function(err, n) {
+                            assert.ifError(err);
+                        },
+                        "it returns a number": function(err, n) {
+                            assert.ifError(err);
+                            assert.isNumber(n);
+                        },
+                        "it returns one": function(err, n) {
+                            assert.ifError(err);
+                            assert.isNumber(n);
+                            assert.equal(n, 1);
+                        }
                     }
                 }
             }
