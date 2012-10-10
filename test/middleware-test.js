@@ -91,10 +91,10 @@ suite.addBatch({
                         assert.instanceOf(store, DatabankStore);
                     }
                 },
-                "and we get a session in an empty store": {
+                "and we get() a session in an empty store": {
                     topic: function(store) {
                         var callback = this.callback;
-                        store.get("NONEXISTENT", callback);
+                        store.get("NONEXISTENT1", callback);
                     },
                     "it works": function(err, session) {
                         assert.ifError(err);
@@ -102,6 +102,15 @@ suite.addBatch({
                     "it returns null": function(err, session) {
                         assert.ifError(err);
                         assert.isNull(session);
+                    }
+                },
+                "and we destroy() a session in an empty store": {
+                    topic: function(store) {
+                        var callback = this.callback;
+                        store.destroy("NONEXISTENT2", callback);
+                    },
+                    "it works": function(err) {
+                        assert.ifError(err);
                     }
                 }
             }
