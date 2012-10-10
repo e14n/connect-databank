@@ -66,7 +66,11 @@ suite.addBatch({
                         }
                     });
                 },
-                "it works": function(err, store) {
+                "it works": function(err, store, DatabankStore) {
+                    assert.ifError(err);
+                    assert.isObject(store);
+                },
+                "it has the right type": function(err, store, DatabankStore) {
                     assert.ifError(err);
                     assert.isObject(store);
                 },
@@ -75,7 +79,31 @@ suite.addBatch({
                 "it has a destroy() method": methodContext("destroy"),
                 "it has an all() method": methodContext("all"),
                 "it has a length() method": methodContext("length"),
-                "it has a clear() method": methodContext("clear")
+                "it has a clear() method": methodContext("clear"),
+                "and we check the object type": {
+                    topic: function(store, DatabankStore) {
+                        var cb = this.callback;
+                        cb(null, store, DatabankStore);
+                    },
+                    "it has the right type": function(err, store, DatabankStore) {
+                        assert.ifError(err);
+                        assert.isObject(store);
+                        assert.instanceOf(store, DatabankStore);
+                    }
+                },
+                "and we get a session in an empty store": {
+                    topic: function(store) {
+                        var callback = this.callback;
+                        store.get("NONEXISTENT", callback);
+                    },
+                    "it works": function(err, session) {
+                        assert.ifError(err);
+                    },
+                    "it returns null": function(err, session) {
+                        assert.ifError(err);
+                        assert.isNull(session);
+                    }
+                }
             }
         }
     }
