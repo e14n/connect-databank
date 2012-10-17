@@ -1,6 +1,6 @@
 {
     "name": "connect-databank",
-    "version": "0.1.0-alpha.1",
+    "version": "0.1.0",
     "author": "Evan Prodromou <evan@e14n.com>",
     "description": "Use any databank driver as a store for connect sessions",
     "scripts": {
