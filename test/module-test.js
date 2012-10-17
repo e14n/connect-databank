@@ -1,6 +1,6 @@
-// middleware-test.js
+// module-test.js
 //
-// Test the middleware interface
+// Test the module interface
 //
 // Copyright 2012, E14N Inc.
 //
