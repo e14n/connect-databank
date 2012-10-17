@@ -1,0 +1,7 @@
+language: node_js
+node_js:
+  - 0.8
+script: "vows --spec test/*-test.js; sudo vows --spec test/*-test-as-root.js"
+before_script: 
+  - "./test/hosts.sh"
+
