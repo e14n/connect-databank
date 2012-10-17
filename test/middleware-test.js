@@ -25,6 +25,7 @@ var assert = require("assert"),
     util = require("util"),
     Logger = require("bunyan"),
     connect = require("connect"),
+    Browser = require("zombie"),
     Databank = databank.Databank;
 
 var suite = vows.describe("middleware interface");
@@ -47,10 +48,7 @@ suite.addBatch({
             "and we instantiate a store": {
                 topic: function(DatabankStore) {
 		    var callback = this.callback,
-		        db = Databank.get("memory", {}),
-		        str = new StreamMock(),
-		        log = new Logger({name: "connect-databank-test",
-					  stream: str});
+		        db = Databank.get("memory", {});
 
 		    db.connect({}, function(err) {
 			var store;
@@ -58,40 +56,107 @@ suite.addBatch({
 			    callback(err, null);
 			} else {
 			    try {
-				store = new DatabankStore(db, log);
-				callback(null, store, str);
+				store = new DatabankStore(db);
+				callback(null, store);
 			    } catch (e) {
 				callback(e, null);
 			    }
 			}
 		    });
 		},
-                teardown: function(store, str) {
+                teardown: function(store) {
 		    if (store && store.bank && store.bank.disconnect) {
 			store.bank.disconnect(function(err) {});
 		    }
 		},
-                "it works": function(err, store, str) {
+                "it works": function(err, store) {
                     assert.ifError(err);
                     assert.isObject(store);
                 },
 		"and we start an app using the store": {
-		    topic: function(store, str) {
+		    topic: function(store) {
 			var cb = this.callback,
 			    app = connect();
-			
+
+			// We use this to leak the session data
+
+			app.callback = null;
+			app.setCallback = function(callback) {
+			    this.callback = callback;
+			};
+
+			app.use(connect.cookieParser());
 			app.use(connect.session({secret: "test", store: store}));
 
 			app.use(function(req, res) {
+			    var cb;
+			    req.session.lastUrl = req.originalUrl;
+			    if (req.session.hits) {
+				req.session.hits++;
+			    } else {
+				req.session.hits = 1;
+			    }
 			    res.end("Hello, world!");
+			    // Leak the session out the side door
+			    if (app.callback) {
+				cb = app.callback;
+				process.nextTick(function() {
+				    cb(null, req.session);
+				});
+			    }
 			});
 
 			app.listen(1516, function() {
-			    cb(null);
+			    cb(null, app);
 			});
 		    },
-		    "it works": function(err) {
+		    "it works": function(err, app) {
 			assert.ifError(err);
+			assert.isObject(app);
+		    },
+		    "and we create a browser": {
+			topic: function(app, store) {
+			    return new Browser();
+			},
+			"it works": function(br) {
+			    assert.isObject(br);
+			},
+			"and we browse to the app": {
+			    topic: function(br, app, store) {
+				var cb = this.callback,
+				    sess = null;
+				app.setCallback(function(err, session) {
+				    sess = session;
+				});
+				br.visit("http://localhost:1516/first", function(err, browser) {
+				    cb(err, sess);
+				});
+			    },
+			    "it works": function(err, session) {
+				assert.ifError(err);
+				assert.isObject(session);
+				assert.equal(session.hits, 1);
+				assert.equal(session.lastUrl, "/first");
+			    },
+			    "and we browse again": {
+				topic: function(old, br, app, store) {
+				    var cb = this.callback,
+				    sess = null;
+				    app.setCallback(function(err, session) {
+					sess = session;
+				    });
+				    br.visit("http://localhost:1516/second", function(err, browser) {
+					cb(err, sess);
+				    });
+				},
+				"it works": function(err, session) {
+				    assert.ifError(err);
+				    assert.isObject(session);
+				    assert.equal(session.hits, 2);
+				    assert.equal(session.lastUrl, "/second");
+				}
+			    }
+			}
 		    }
 		}
 	    }
