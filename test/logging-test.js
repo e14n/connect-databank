@@ -36,18 +36,26 @@ var StreamMock = function() {
 util.inherits(StreamMock, stream.Stream);
 
 StreamMock.prototype.write = function(data) {
+    var cb;
     this.output = data;
     if (this.callback) {
-	this.callback(null, data);
+	cb = this.callback;
+	process.nextTick(function() {
+	    cb(null, data);
+	});
 	this.callback = null;
     }
     return true;
 };
 
 StreamMock.prototype.end = function(data) {
+    var cb;
     this.output = data;
     if (this.callback) {
-	this.callback(null, data);
+	cb = this.callback;
+	process.nextTick(function() {
+	    cb(null, data);
+	});
 	this.callback = null;
     }
 };
@@ -114,8 +122,26 @@ suite.addBatch({
 			assert.ifError(err);
 			assert.ok(written);
 		    },
+		    "log data looks correct": function(err, written) {
+			var obj;
+			assert.ifError(err);
+			assert.ok(written);
+			try {
+			    obj = JSON.parse(written);
+			    assert.isObject(obj);
+			    assert.equal(obj.name, "connect-databank-test");
+			    assert.equal(obj.component, "connect-databank");
+			    assert.equal(obj.sid, "ID1");
+			    assert.isObject(obj.session);
+			    assert.isObject(obj.session.cookie);
+			    assert.equal(obj.session.cookie.expires, 0);
+			    assert.equal(obj.session.example, "foo");
+			} catch (e) {
+			    assert.ifError(e);
+			}
+		    },
 		    "and we get() a session": {
-			topic: function(store, str) {
+			topic: function(setlog, store, str) {
 			    str.setCallback(this.callback);
 			    store.get("ID1", function(err) {});
 			},
@@ -123,8 +149,26 @@ suite.addBatch({
 			    assert.ifError(err);
 			    assert.ok(written);
 			},
+			"log data looks correct": function(err, written) {
+			    var obj;
+			    assert.ifError(err);
+			    assert.ok(written);
+			    try {
+				obj = JSON.parse(written);
+				assert.isObject(obj);
+				assert.equal(obj.name, "connect-databank-test");
+				assert.equal(obj.component, "connect-databank");
+				assert.equal(obj.sid, "ID1");
+				assert.isObject(obj.session);
+				assert.isObject(obj.session.cookie);
+				assert.equal(obj.session.cookie.expires, 0);
+				assert.equal(obj.session.example, "foo");
+			    } catch (e) {
+				assert.ifError(e);
+			    }
+			},
 			"and we destroy() a session": {
-			    topic: function(store, str) {
+			    topic: function(getlog, setlog, store, str) {
 				str.setCallback(this.callback);
 				store.destroy("ID1", function(err) {});
 			    },
@@ -132,6 +176,20 @@ suite.addBatch({
 				assert.ifError(err);
 				assert.ok(written);
 			    },
+			    "log data looks correct": function(err, written) {
+				var obj;
+				assert.ifError(err);
+				assert.ok(written);
+				try {
+				    obj = JSON.parse(written);
+				    assert.isObject(obj);
+				    assert.equal(obj.name, "connect-databank-test");
+				    assert.equal(obj.component, "connect-databank");
+				    assert.equal(obj.sid, "ID1");
+				} catch (e) {
+				    assert.ifError(e);
+				}
+			    }
 			}
 		    }
 		}
