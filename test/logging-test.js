@@ -105,10 +105,6 @@ suite.addBatch({
                     assert.ifError(err);
                     assert.isObject(store);
                 },
-                "it has the right type": function(err, store, str) {
-                    assert.ifError(err);
-                    assert.isObject(store);
-                },
 		"and we set() a session": {
 		    topic: function(store, str) {
 			str.setCallback(this.callback);
