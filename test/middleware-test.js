@@ -112,7 +112,7 @@ suite.addBatch({
 		    },
 		    "it works": function(err, app) {
 			assert.ifError(err);
-			assert.isObject(app);
+			assert.ok(app);
 		    },
 		    "and we create a browser": {
 			topic: function(app, store) {
