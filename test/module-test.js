@@ -93,6 +93,12 @@ suite.addBatch({
             "it works": function(DatabankStore) {
                 assert.isFunction(DatabankStore);
             },
+	    "it has a schema attribute": function(DatabankStore) {
+		assert.isFunction(DatabankStore);
+                assert.isObject(DatabankStore.schema);
+		assert.includes(DatabankStore.schema, "session");
+		assert.includes(DatabankStore.schema, "sessionlist");
+	    },
             "and we instantiate a store": {
                 topic: makeStore,
                 teardown: breakStore,
