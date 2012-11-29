@@ -1,6 +1,6 @@
 {
     "name": "connect-databank",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "author": "Evan Prodromou <evan@e14n.com>",
     "description": "Use any databank driver as a store for connect sessions",
     "scripts": {
@@ -18,7 +18,7 @@
     ],
     "dependencies" : {
         "step": "0.0.x",
-	"databank":  "0.14.x"
+	"databank":  "0.15.x"
     },
     "devDependencies": {
         "vows":  "0.6.x",
