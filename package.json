@@ -18,7 +18,7 @@
     ],
     "dependencies" : {
         "step": "0.0.x",
-	"databank":  "0.15.x"
+	"databank":  "0.16.x"
     },
     "devDependencies": {
         "vows":  "0.6.x",
