@@ -20,7 +20,7 @@
         "step": "0.0.x",
         "jankyqueue": "0.1.x",
 	"underscore":  "1.4.x",
-	"databank":  "0.17.x"
+	"databank":  "0.18.x"
     },
     "devDependencies": {
         "vows":  "0.7.x",
@@ -35,6 +35,6 @@
         }
     ],
     "engines": {
-        "node": ">=0.8"
+        "node": ">=0.6"
     }
 }
