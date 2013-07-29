@@ -148,16 +148,6 @@ suite.addBatch({
                                         assert.isUndefined(sids[i]);
                                     }
                                 }
-                            },
-                            "and we get the session list": {
-                                topic: function(store) {
-                                    store.bank.read("sessionlist", "active", this.callback);
-                                },
-                                "it works": function(err, sessions) {
-                                    assert.ifError(err);
-                                    assert.isArray(sessions);
-                                    assert.equal(sessions.length, 50);
-                                }
                             }
                         }
                     }
