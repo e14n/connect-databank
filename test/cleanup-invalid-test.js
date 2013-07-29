@@ -25,7 +25,7 @@ var assert = require("assert"),
     Logger = require("bunyan"),
     Databank = databank.Databank;
 
-var suite = vows.describe("cleanup interface");
+var suite = vows.describe("cleanup works for deleted sessions");
 
 suite.addBatch({
     "when we require the connect-databank module": {
