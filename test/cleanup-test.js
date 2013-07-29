@@ -111,7 +111,7 @@ suite.addBatch({
                                             store.set("NEW"+i, {cookie: {expires: now + 10000}, number: i + 100, sid: "NEW"+i}, group());
                                         }
                                     },
-                                    function(err, sessions) {
+                                    function(err) {
                                         cb(err);
                                     }
                                 );
