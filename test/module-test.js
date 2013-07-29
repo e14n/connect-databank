@@ -240,7 +240,8 @@ suite.addBatch({
                                 cookie: {
                                     expires: false
                                 },
-                                name: "Curly"
+                                name: "Curly",
+                                sid: "VALID1"
                             };
 
                         store.set("VALID1", session, callback); 
@@ -335,7 +336,7 @@ suite.addBatch({
                                 var i, group = this.group();
 
                                 for (i = 0; i < 1000; i++) {
-                                    store.set("LOTS"+i, {cookie: {expires: false}, number: i}, group()); 
+                                    store.set("LOTS"+i, {cookie: {expires: false}, number: i, sid: "LOTS"+i}, group()); 
                                 }
                             },
                             function(err) {
@@ -460,7 +461,7 @@ suite.addBatch({
                                 var i, group = this.group();
 
                                 for (i = 0; i < 1000; i++) {
-                                    store.set("MORE"+i, {cookie: {expires: false}, number: i}, group()); 
+                                    store.set("MORE"+i, {cookie: {expires: false}, number: i, sid: "MORE"+i}, group()); 
                                 }
                             },
                             function(err) {
@@ -545,7 +546,7 @@ suite.addBatch({
                                 var i, group = this.group();
 
                                 for (i = 0; i < 1000; i++) {
-                                    store.set("EVENMORE"+i, {cookie: {expires: false}, number: i}, group()); 
+                                    store.set("EVENMORE"+i, {cookie: {expires: false}, number: i, sid: "EVENMORE"+i}, group()); 
                                 }
                             },
                             function(err) {

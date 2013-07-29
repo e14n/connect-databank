@@ -116,7 +116,7 @@ suite.addBatch({
 		"and we set() a session": {
 		    topic: function(store, str) {
 			str.setCallback(this.callback);
-			store.set("ID1", {cookie: {expires: 0}, example: "foo"}, function(err) {});
+			store.set("ID1", {cookie: {expires: 0}, example: "foo", sid: "ID1"}, function(err) {});
 		    },
 		    "it writes to the log": function(err, written) {
 			assert.ifError(err);
@@ -245,7 +245,7 @@ suite.addBatch({
                 },
 		"and we set() a session": {
 		    topic: function(store) {
-			store.set("ID1", {cookie: {expires: 0}, example: "foo"}, this.callback);
+			store.set("ID1", {cookie: {expires: 0}, example: "foo", sid: "ID1"}, this.callback);
 		    },
 		    "it works": function(err) {
 			assert.ifError(err);

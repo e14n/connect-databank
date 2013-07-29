@@ -108,7 +108,7 @@ suite.addBatch({
                                     function() {
                                         var i, group = this.group(), now = Date.now();
                                         for (i = 0; i < 100; i++) {
-                                            store.set("NEW"+i, {cookie: {expires: now + 10000}, number: i + 100}, group());
+                                            store.set("NEW"+i, {cookie: {expires: now + 10000}, number: i + 100, sid: "NEW"+i}, group());
                                         }
                                     },
                                     function(err, sessions) {

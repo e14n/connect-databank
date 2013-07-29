@@ -78,7 +78,7 @@ suite.addBatch({
                             function() {
                                 var i, group = this.group(), now = Date.now();
                                 for (i = 0; i < 100; i++) {
-                                    store.set("TODEL"+i, {cookie: {expires: now + 180000}, number: i}, group());
+                                    store.set("TODEL"+i, {cookie: {expires: now + 180000}, number: i, sid: "TODEL"+i}, group());
                                 }
                             },
                             function(err, sessions) {
