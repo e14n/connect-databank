@@ -97,7 +97,6 @@ suite.addBatch({
 		assert.isFunction(DatabankStore);
                 assert.isObject(DatabankStore.schema);
 		assert.includes(DatabankStore.schema, "session");
-		assert.includes(DatabankStore.schema, "sessionlist");
 	    },
             "and we instantiate a store": {
                 topic: makeStore,
