@@ -54,24 +54,25 @@ suite.addBatch({
 			} else {
 			    try {
 				store = new DatabankStore(db, null, 1000);
-				callback(null, store);
+				callback(null, store, db);
 			    } catch (e) {
-				callback(e, null);
+				callback(e, null, null);
 			    }
 			}
 		    });
 		},
-                teardown: function(store) {
-		    if (store && store.bank && store.bank.disconnect) {
-			store.bank.disconnect(function(err) {});
+                teardown: function(store, db) {
+		    if (db) {
+			db.disconnect(function(err) {});
 		    }
 		},
-                "it works": function(err, store) {
+                "it works": function(err, store, db) {
                     assert.ifError(err);
                     assert.isObject(store);
+                    assert.isObject(db);
                 },
                 "and we add a bunch of sessions": {
-                    topic: function(store) {
+                    topic: function(store, db) {
                         var cb = this.callback;
                         
                         Step(
@@ -90,14 +91,14 @@ suite.addBatch({
                         assert.ifError(err);
                     },
                     "and we delete every other session": {
-                        topic: function(store) {
+                        topic: function(store, db) {
                             var cb = this.callback;
                             
                             Step(
                                 function() {
                                     var i, group = this.group();
                                     for (i = 0; i < 100; i += 2) {
-                                        store.bank.del("session", "TODEL"+i, group());
+                                        db.del("session", "TODEL"+i, group());
                                     }
                                 },
                                 function(err) {
