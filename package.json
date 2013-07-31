@@ -17,10 +17,10 @@
         "databank"
     ],
     "dependencies" : {
-        "step": "0.0.x",
-        "jankyqueue": "0.1.x",
+        "async": "0.2.x",
 	"underscore":  "1.4.x",
-	"databank":  "0.19.x"
+	"databank":  "0.19.x",
+        "set-immediate": "0.1.x"
     },
     "devDependencies": {
         "vows":  "0.7.x",
