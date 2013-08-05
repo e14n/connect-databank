@@ -1,4 +1,4 @@
 {
-    "driver": "redis",
-    "params": {"database": 0}
+    "driver": "memory",
+    "params": {}
 }
