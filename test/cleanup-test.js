@@ -82,7 +82,7 @@ suite.addBatch({
                         Step(
                             function() {
                                 var i, group = this.group(), now = Date.now();
-                                for (i = 0; i < 100; i++) {
+                                for (i = 0; i < 5000; i++) {
                                     store.set("OLD"+i, {cookie: {expires: now + 10000}, number: i}, group());
                                 }
                             },
@@ -111,8 +111,8 @@ suite.addBatch({
                                 Step(
                                     function() {
                                         var i, group = this.group(), now = Date.now();
-                                        for (i = 0; i < 100; i++) {
-                                            store.set("NEW"+i, {cookie: {expires: now + 10000}, number: i + 100, sid: "NEW"+i}, group());
+                                        for (i = 0; i < 5000; i++) {
+                                            store.set("NEW"+i, {cookie: {expires: now + 10000}, number: i + 5000, sid: "NEW"+i}, group());
                                         }
                                     },
                                     function(err) {
@@ -148,7 +148,7 @@ suite.addBatch({
                                         for (i = 0; i < sessions.length; i++) {
                                             sids[sessions[i].number] = true;
                                         }
-                                        for (i = 100; i < 200; i++) {
+                                        for (i = 5000; i < 10000; i++) {
                                             assert.include(sids, i);
                                         }
                                     },
@@ -159,7 +159,7 @@ suite.addBatch({
                                         for (i = 0; i < sessions.length; i++) {
                                             sids[sessions[i].number] = true;
                                         }
-                                        for (i = 0; i < 100; i++) {
+                                        for (i = 0; i < 5000; i++) {
                                             assert.isUndefined(sids[i]);
                                         }
                                     }
