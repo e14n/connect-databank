@@ -16,7 +16,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var assert = require("assert"),
+var fs = require("fs"),
+    path = require("path"),
+    assert = require("assert"),
     vows = require("vows"),
     databank = require("databank"),
     Step = require("step"),
@@ -24,6 +26,8 @@ var assert = require("assert"),
     util = require("util"),
     Logger = require("bunyan"),
     Databank = databank.Databank;
+
+var tc = JSON.parse(fs.readFileSync(path.resolve(__dirname, "config.json")));
 
 var suite = vows.describe("cleanup interface");
 
@@ -46,9 +50,9 @@ suite.addBatch({
             "and we instantiate a store with a 5 second cleanup interval": {
                 topic: function(DatabankStore) {
 		    var callback = this.callback,
-		        db = Databank.get("memory", {});
+		        db = Databank.get(tc.driver, tc.params);
 
-		    db.connect({}, function(err) {
+		    db.connect(tc.params, function(err) {
 			var store;
 			if (err) {
 			    callback(err, null);
