@@ -16,7 +16,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var assert = require("assert"),
+var fs = require("fs"),
+    path = require("path"),
+    assert = require("assert"),
     vows = require("vows"),
     databank = require("databank"),
     Step = require("step"),
@@ -25,7 +27,11 @@ var assert = require("assert"),
     Logger = require("bunyan"),
     Databank = databank.Databank;
 
+var tc = JSON.parse(fs.readFileSync(path.resolve(__dirname, "config.json")));
+
 var suite = vows.describe("cleanup works for deleted sessions");
+
+var MAX_SESSIONS = 5000;
 
 suite.addBatch({
     "when we require the connect-databank module": {
@@ -45,9 +51,10 @@ suite.addBatch({
             },
             "and we instantiate a store with a 5 second cleanup interval": {
                 topic: function(DatabankStore) {
-		    var callback = this.callback, db = Databank.get("memory", {});
+		    var callback = this.callback,
+                        db = Databank.get(tc.driver, tc.params);
 
-		    db.connect({}, function(err) {
+		    db.connect(tc.params, function(err) {
 			var store;
 			if (err) {
 			    callback(err, null);
@@ -78,7 +85,7 @@ suite.addBatch({
                         Step(
                             function() {
                                 var i, group = this.group(), now = Date.now();
-                                for (i = 0; i < 100; i++) {
+                                for (i = 0; i < MAX_SESSIONS; i++) {
                                     store.set("TODEL"+i, {cookie: {expires: now + 180000}, number: i, sid: "TODEL"+i}, group());
                                 }
                             },
@@ -97,7 +104,7 @@ suite.addBatch({
                             Step(
                                 function() {
                                     var i, group = this.group();
-                                    for (i = 0; i < 100; i += 2) {
+                                    for (i = 0; i < MAX_SESSIONS; i += 2) {
                                         db.del("session", "TODEL"+i, group());
                                     }
                                 },
@@ -134,7 +141,7 @@ suite.addBatch({
                                     for (i = 0; i < sessions.length; i++) {
                                         sids[sessions[i].number] = true;
                                     }
-                                    for (i = 1; i < 100; i += 2) {
+                                    for (i = 1; i < 5000; i += 2) {
                                         assert.include(sids, i);
                                     }
                                 },
@@ -145,7 +152,7 @@ suite.addBatch({
                                     for (i = 0; i < sessions.length; i++) {
                                         sids[sessions[i].number] = true;
                                     }
-                                    for (i = 0; i < 100; i += 2) {
+                                    for (i = 0; i < 5000; i += 2) {
                                         assert.isUndefined(sids[i]);
                                     }
                                 }
