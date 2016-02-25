@@ -1,6 +1,6 @@
 // logging-test.js
 //
-// Test the logging 
+// Test the logging
 //
 // Copyright 2012, E14N Inc.
 //
@@ -88,7 +88,7 @@ suite.addBatch({
 		        str = new StreamMock(),
 		        log = new Logger({name: "connect-databank-test",
 					  stream: str});
-		        
+
 
 		    db.connect({}, function(err) {
 			var store;
@@ -105,9 +105,12 @@ suite.addBatch({
 		    });
 		},
                 teardown: function(store, str) {
-		    if (store && store.bank && store.bank.dissession) {
-			store.bank.dissession(function(err) {});
+		    if (store && store.bank && store.bank.disconnect) {
+			store.bank.disconnect(function(err) {});
 		    }
+        if (store && store.close) {
+          store.close();
+        }
 		},
                 "it works": function(err, store, str) {
                     assert.ifError(err);
@@ -218,7 +221,7 @@ suite.addBatch({
                 topic: function(DatabankStore) {
 		    var callback = this.callback,
 		        db = Databank.get("memory", {});
-		        
+
 
 		    db.connect({}, function(err) {
 			var store;
@@ -235,8 +238,8 @@ suite.addBatch({
 		    });
 		},
                 teardown: function(store) {
-		    if (store && store.bank && store.bank.dissession) {
-			store.bank.dissession(function(err) {});
+		    if (store && store.bank && store.bank.disconnect) {
+			store.bank.disconnect(function(err) {});
 		    }
 		},
                 "it works": function(err, store) {

@@ -70,8 +70,11 @@ var makeStore = function(DatabankStore) {
 };
 
 var breakStore = function(store) {
-    if (store && store.bank && store.bank.dissession) {
-        store.bank.dissession(function(err) {});
+    if (store && store.bank && store.bank.disconnect) {
+        store.bank.disconnect(function(err) {});
+    }
+    if (store && store.close) {
+      store.close();
     }
 };
 
@@ -244,7 +247,7 @@ suite.addBatch({
                                 sid: "VALID1"
                             };
 
-                        store.set("VALID1", session, callback); 
+                        store.set("VALID1", session, callback);
                     },
                     "it works": function(err) {
                         assert.ifError(err);
@@ -297,7 +300,7 @@ suite.addBatch({
                             assert.isFalse(session.cookie.expires);
                         }
                     },
-                    "and we get the length()": lengthContext(1) 
+                    "and we get the length()": lengthContext(1)
                 }
             }
         }
@@ -336,7 +339,7 @@ suite.addBatch({
                                 var i, group = this.group();
 
                                 for (i = 0; i < 1000; i++) {
-                                    store.set("LOTS"+i, {cookie: {expires: false}, number: i, sid: "LOTS"+i}, group()); 
+                                    store.set("LOTS"+i, {cookie: {expires: false}, number: i, sid: "LOTS"+i}, group());
                                 }
                             },
                             function(err) {
@@ -356,7 +359,7 @@ suite.addBatch({
                                     var i, group = this.group();
 
                                     for (i = 0; i < 1000; i++) {
-                                        store.get("LOTS"+i, group()); 
+                                        store.get("LOTS"+i, group());
                                     }
                                 },
                                 function(err, sessions) {
@@ -422,7 +425,7 @@ suite.addBatch({
                             }
                         }
                     },
-                    "and we get the length()": lengthContext(1000) 
+                    "and we get the length()": lengthContext(1000)
                 }
             }
         }
@@ -461,7 +464,7 @@ suite.addBatch({
                                 var i, group = this.group();
 
                                 for (i = 0; i < 1000; i++) {
-                                    store.set("MORE"+i, {cookie: {expires: false}, number: i, sid: "MORE"+i}, group()); 
+                                    store.set("MORE"+i, {cookie: {expires: false}, number: i, sid: "MORE"+i}, group());
                                 }
                             },
                             function(err) {
@@ -481,7 +484,7 @@ suite.addBatch({
                                     var i, group = this.group();
 
                                     for (i = 0; i < 1000; i++) {
-                                        store.destroy("MORE"+i, group()); 
+                                        store.destroy("MORE"+i, group());
                                     }
                                 },
                                 function(err) {
@@ -506,7 +509,7 @@ suite.addBatch({
                                 assert.lengthOf(sessions, 0);
                             }
                         },
-                        "and we get the length()": lengthContext(0) 
+                        "and we get the length()": lengthContext(0)
                     }
                 }
             }
@@ -546,7 +549,7 @@ suite.addBatch({
                                 var i, group = this.group();
 
                                 for (i = 0; i < 1000; i++) {
-                                    store.set("EVENMORE"+i, {cookie: {expires: false}, number: i, sid: "EVENMORE"+i}, group()); 
+                                    store.set("EVENMORE"+i, {cookie: {expires: false}, number: i, sid: "EVENMORE"+i}, group());
                                 }
                             },
                             function(err) {
@@ -578,7 +581,7 @@ suite.addBatch({
                                 assert.lengthOf(sessions, 0);
                             }
                         },
-                        "and we get the length()": lengthContext(0) 
+                        "and we get the length()": lengthContext(0)
                     }
                 }
             }

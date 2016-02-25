@@ -65,9 +65,12 @@ suite.addBatch({
 		    });
 		},
                 teardown: function(store) {
-		    if (store && store.bank && store.bank.dissession) {
-			store.bank.dissession(function(err) {});
+		    if (store && store.bank && store.bank.disconnect) {
+			store.bank.disconnect(function(err) {});
 		    }
+        if (store && store.close) {
+          store.close();
+        }
 		},
                 "it works": function(err, store) {
                     assert.ifError(err);

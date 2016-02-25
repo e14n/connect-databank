@@ -41,6 +41,15 @@ var makeStore = function(DatabankStore) {
     });
 };
 
+var breakStore = function(store) {
+    if (store && store.bank && store.bank.disconnect) {
+        store.bank.disconnect(function(err) {});
+    }
+    if (store && store.close) {
+      store.close();
+    }
+};
+
 var suite = vows.describe("store scaling interface");
 
 suite.addBatch({
@@ -61,6 +70,7 @@ suite.addBatch({
             },
             "and we instantiate a store": {
                 topic: makeStore,
+                teardown: breakStore,
                 "it works": function(err, store, DatabankStore) {
                     assert.ifError(err);
                     assert.isObject(store);
@@ -128,5 +138,5 @@ suite.addBatch({
         }
     }
 });
-                
+
 suite["export"](module);
