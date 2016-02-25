@@ -17,15 +17,15 @@
 // limitations under the License.
 
 var assert = require("assert"),
-vows = require("vows"),
-databank = require("databank"),
-Step = require("step"),
-stream = require("stream"),
-util = require("util"),
-Logger = require("bunyan"),
-Databank = databank.Databank;
+  vows = require("vows"),
+  databank = require("databank"),
+  Step = require("step"),
+  stream = require("stream"),
+  util = require("util"),
+  Logger = require("bunyan"),
+  Databank = databank.Databank;
 
-var suite = vows.describe("store module interface");
+var suite = vows.describe("logging");
 
 var StreamMock = function() {
   this.writable = true;
@@ -40,7 +40,7 @@ StreamMock.prototype.write = function(data) {
   this.output = data;
   if (this.callback) {
     cb = this.callback;
-    process.nextTick(function() {
+    setImmediate(function() {
       cb(null, data);
     });
     this.callback = null;
@@ -53,7 +53,7 @@ StreamMock.prototype.end = function(data) {
   this.output = data;
   if (this.callback) {
     cb = this.callback;
-    process.nextTick(function() {
+    setImmediate(function() {
       cb(null, data);
     });
     this.callback = null;
@@ -86,9 +86,7 @@ suite.addBatch({
           var callback = this.callback,
           db = Databank.get("memory", {}),
           str = new StreamMock(),
-          log = new Logger({name: "connect-databank-test",
-          stream: str});
-
+          log = new Logger({name: "connect-databank-test", level: "debug", stream: str});
 
           db.connect({}, function(err) {
             var store;
