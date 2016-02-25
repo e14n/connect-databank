@@ -41,20 +41,20 @@ suite.addBatch({
         "it works": function(middleware) {
             assert.isFunction(middleware);
         },
-        "and we apply it to the connect module": {
+        "and we apply it to the session module": {
             topic: function(middleware) {
-                var connect = require("connect");
-                return middleware(connect);
+                var session = require("express-session");
+                return middleware(session);
             },
             "it works": function(DatabankStore) {
                 assert.isFunction(DatabankStore);
             },
             "and we instantiate a store with a 5 second cleanup interval": {
                 topic: function(DatabankStore) {
-		    var callback = this.callback,
-                        db = Databank.get(tc.driver, tc.params);
+		               var callback = this.callback,
+                      db = Databank.get(tc.driver, tc.params);
 
-		    db.connect(tc.params, function(err) {
+		    db.session(tc.params, function(err) {
 			var store;
 			if (err) {
 			    callback(err, null);
@@ -70,7 +70,7 @@ suite.addBatch({
 		},
                 teardown: function(store, db) {
 		    if (db) {
-			db.disconnect(function(err) {});
+			db.dissession(function(err) {});
 		    }
 		},
                 "it works": function(err, store, db) {
@@ -81,7 +81,7 @@ suite.addBatch({
                 "and we add a bunch of sessions": {
                     topic: function(store, db) {
                         var cb = this.callback;
-                        
+
                         Step(
                             function() {
                                 var i, group = this.group(), now = Date.now();
@@ -100,7 +100,7 @@ suite.addBatch({
                     "and we delete every other session": {
                         topic: function(store, db) {
                             var cb = this.callback;
-                            
+
                             Step(
                                 function() {
                                     var i, group = this.group();

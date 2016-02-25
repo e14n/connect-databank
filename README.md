@@ -1,12 +1,12 @@
 connect-databank
 ================
 
-Use any database that databank supports as a connect session store
+Use any database that databank supports as a session session store
 
 License
 -------
 
-Copyright 2012, E14N Inc.
+Copyright 2012, 2015, E14N Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,10 +28,10 @@ use several different kinds of databases - Mongo, Redis, CouchBase,
 memory, disk - with a uniform API -- basically CRUD + search.
 
 This module will let you use any of those databases as a
-[connect](https://npmjs.org/package/connect) session backend.
+[session](https://npmjs.org/package/session) session backend.
 
 I think it's particularly useful if you're distributing software and
-you don't want to make your users depend on some particular connect
+you don't want to make your users depend on some particular session
 session backend.
 
 How to use it
@@ -39,12 +39,14 @@ How to use it
 
 Try something like this.
 
-    var connect = require("connect"),
+    var express = require("express"),
+        cookieParser = require("cookie-parser"),
+        session = require("express-session"),
         Logger = require("bunyan"),
         Databank = require("databank").Databank,
-        DatabankStore = require("connect-databank")(connect),
-	driver,
-	params,
+        DatabankStore = require("connect-databank")(session),
+	      driver,
+	      params,
         db;
 
     // Example params. See databank for details.
@@ -52,25 +54,25 @@ Try something like this.
     driver = "disk";
     params = {dir: "/var/lib/databank/session"};
 
-    // Get a bank and connect...
+    // Get a bank and session...
 
     db = Databank.get(driver, params);
 
-    db.connect({}, function(err) {
+    db.session({}, function(err) {
 
         var store, app, log;
 
 	// Use bunyan for logging
-        
+
 	log = new Logger({name: "myapp"});
 
         // cleanup session store every 5 minutes
 
         store = new DatabankStore(db, log, 600000);
 
-	app = connect();
-	app.use(connect.cookieParser());
-	app.use(connect.session({secret: "my dog has fleas", store: store, cookie: {maxAge: 180000}}));
+	app = expess();
+	app.use(session.cookieParser());
+	app.use(session.session({secret: "my dog has fleas", store: store, cookie: {maxAge: 180000}}));
 
 	app.listen(3000);
     });
@@ -92,15 +94,15 @@ External API
   is a session GC interval in milliseconds; if it's not falsy the
   store will garbage-collect old unused sessions this often.
 
-  You pass the DatabankStore to `connect.session()` as the `store`
-  parameter. See the [connect session
-  middleware](http://www.senchalabs.org/connect/middleware-session.html)
+  You pass the DatabankStore to `session.session()` as the `store`
+  parameter. See the [session session
+  middleware](http://www.senchalabs.org/session/middleware-session.html)
   documentation for more details.
 
 Store interface
 ---------------
 
-This is the interface that connect requires of us. You can fiddle with
+This is the interface that session requires of us. You can fiddle with
 it if you want, but watch your fingers. The store will be available as
 `req.sessionStore` in your routes.
 
@@ -150,7 +152,6 @@ Bonus features
   an `err`.
 
   NOTE that you have to have a `maxAge` on your `cookie` parameter for
-  `connect.session()` for this to work. It won't clean up sessions
+  `session.session()` for this to work. It won't clean up sessions
   that never expire -- browser sessions -- even if they're very, very
   old.
-

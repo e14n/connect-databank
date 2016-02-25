@@ -24,7 +24,7 @@ var assert = require("assert"),
     stream = require("stream"),
     util = require("util"),
     Logger = require("bunyan"),
-    connect = require("connect"),
+    session = require("session"),
     Browser = require("zombie"),
     Databank = databank.Databank;
 
@@ -38,9 +38,9 @@ suite.addBatch({
         "it works": function(middleware) {
             assert.isFunction(middleware);
         },
-        "and we apply it to the connect module": {
+        "and we apply it to the session module": {
             topic: function(middleware) {
-                return middleware(connect);
+                return middleware(session);
             },
             "it works": function(DatabankStore) {
                 assert.isFunction(DatabankStore);
@@ -50,7 +50,7 @@ suite.addBatch({
 		    var callback = this.callback,
 		        db = Databank.get("memory", {});
 
-		    db.connect({}, function(err) {
+		    db.session({}, function(err) {
 			var store;
 			if (err) {
 			    callback(err, null);
@@ -65,8 +65,8 @@ suite.addBatch({
 		    });
 		},
                 teardown: function(store) {
-		    if (store && store.bank && store.bank.disconnect) {
-			store.bank.disconnect(function(err) {});
+		    if (store && store.bank && store.bank.dissession) {
+			store.bank.dissession(function(err) {});
 		    }
 		},
                 "it works": function(err, store) {
@@ -76,7 +76,7 @@ suite.addBatch({
 		"and we start an app using the store": {
 		    topic: function(store) {
 			var cb = this.callback,
-			    app = connect();
+			    app = session();
 
 			// We use this to leak the session data
 
@@ -85,8 +85,8 @@ suite.addBatch({
 			    this.callback = callback;
 			};
 
-			app.use(connect.cookieParser());
-			app.use(connect.session({secret: "test", store: store}));
+			app.use(session.cookieParser());
+			app.use(session.session({secret: "test", store: store}));
 
 			app.use(function(req, res) {
 			    var cb;

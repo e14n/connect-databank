@@ -39,10 +39,10 @@ suite.addBatch({
         "it works": function(middleware) {
             assert.isFunction(middleware);
         },
-        "and we apply it to the connect module": {
+        "and we apply it to the session module": {
             topic: function(middleware) {
-                var connect = require("connect");
-                return middleware(connect);
+                var session = require("express-session");
+                return middleware(session);
             },
             "it works": function(DatabankStore) {
                 assert.isFunction(DatabankStore);
@@ -52,7 +52,7 @@ suite.addBatch({
 		    var callback = this.callback,
 		        db = Databank.get(tc.driver, tc.params);
 
-		    db.connect(tc.params, function(err) {
+		    db.session(tc.params, function(err) {
 			var store;
 			if (err) {
 			    callback(err, null);
@@ -67,8 +67,8 @@ suite.addBatch({
 		    });
 		},
                 teardown: function(store) {
-		    if (store && store.bank && store.bank.disconnect) {
-			store.bank.disconnect(function(err) {});
+		    if (store && store.bank && store.bank.dissession) {
+			store.bank.dissession(function(err) {});
 		    }
 		},
                 "it works": function(err, store) {
@@ -78,7 +78,7 @@ suite.addBatch({
                 "and we add a bunch of sessions": {
                     topic: function(store) {
                         var cb = this.callback;
-                        
+
                         Step(
                             function() {
                                 var i, group = this.group(), now = Date.now();
@@ -107,7 +107,7 @@ suite.addBatch({
                         "and we add a bunch more sessions": {
                             topic: function(store) {
                                 var cb = this.callback;
-                                
+
                                 Step(
                                     function() {
                                         var i, group = this.group(), now = Date.now();

@@ -1,8 +1,8 @@
 {
     "name": "connect-databank",
-    "version": "0.13.0",
+    "version": "0.14.0",
     "author": "Evan Prodromou <evan@e14n.com>",
-    "description": "Use any databank driver as a store for connect sessions",
+    "description": "Use any databank driver as a store for session sessions",
     "scripts": {
         "test": "vows --spec --isolate test/*-test.js"
     },
@@ -12,24 +12,24 @@
         "url": "https://github.com/evanp/connect-databank.git"
     },
     "keywords": [
-        "connect",
+        "session",
         "session",
         "databank"
     ],
     "dependencies" : {
         "async": "0.2.x",
-	"underscore":  "1.4.x",
-	"databank":  "0.19.x",
+	      "underscore":  "1.4.x",
+	      "databank":  "0.19.x",
         "set-immediate": "0.1.x",
-        "node-uuid": "1.4.x"
+        "node-uuid": "1.4.x",
+        "express-session": "1.10.x"
     },
     "devDependencies": {
         "vows":  "0.7.x",
-        "connect": "2.6.x",
         "zombie": "2.0.x",
         "bunyan": "0.17.x",
         "step": "0.0.x"
-    },  
+    },
     "licenses": [
         {
             "type": "Apache 2.0",

@@ -73,10 +73,10 @@ suite.addBatch({
         "it works": function(middleware) {
             assert.isFunction(middleware);
         },
-        "and we apply it to the connect module": {
+        "and we apply it to the session module": {
             topic: function(middleware) {
-                var connect = require("connect");
-                return middleware(connect);
+                var session = require("express-session");
+                return middleware(session);
             },
             "it works": function(DatabankStore) {
                 assert.isFunction(DatabankStore);
@@ -90,7 +90,7 @@ suite.addBatch({
 					  stream: str});
 		        
 
-		    db.connect({}, function(err) {
+		    db.session({}, function(err) {
 			var store;
 			if (err) {
 			    callback(err, null);
@@ -105,8 +105,8 @@ suite.addBatch({
 		    });
 		},
                 teardown: function(store, str) {
-		    if (store && store.bank && store.bank.disconnect) {
-			store.bank.disconnect(function(err) {});
+		    if (store && store.bank && store.bank.dissession) {
+			store.bank.dissession(function(err) {});
 		    }
 		},
                 "it works": function(err, store, str) {
@@ -206,10 +206,10 @@ suite.addBatch({
         "it works": function(middleware) {
             assert.isFunction(middleware);
         },
-        "and we apply it to the connect module": {
+        "and we apply it to the session module": {
             topic: function(middleware) {
-                var connect = require("connect");
-                return middleware(connect);
+                var session = require("express-session");
+                return middleware(session);
             },
             "it works": function(DatabankStore) {
                 assert.isFunction(DatabankStore);
@@ -220,7 +220,7 @@ suite.addBatch({
 		        db = Databank.get("memory", {});
 		        
 
-		    db.connect({}, function(err) {
+		    db.session({}, function(err) {
 			var store;
 			if (err) {
 			    callback(err, null);
@@ -235,8 +235,8 @@ suite.addBatch({
 		    });
 		},
                 teardown: function(store) {
-		    if (store && store.bank && store.bank.disconnect) {
-			store.bank.disconnect(function(err) {});
+		    if (store && store.bank && store.bank.dissession) {
+			store.bank.dissession(function(err) {});
 		    }
 		},
                 "it works": function(err, store) {

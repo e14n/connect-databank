@@ -26,7 +26,7 @@ var makeStore = function(DatabankStore) {
     var callback = this.callback,
         db = Databank.get("memory", {});
 
-    db.connect({}, function(err) {
+    db.session({}, function(err) {
         var store;
         if (err) {
             callback(err, null);
@@ -51,10 +51,10 @@ suite.addBatch({
         "it works": function(middleware) {
             assert.isFunction(middleware);
         },
-        "and we apply it to the connect module": {
+        "and we apply it to the session module": {
             topic: function(middleware) {
-                var connect = require("connect");
-                return middleware(connect);
+                var session = require("express-session");
+                return middleware(session);
             },
             "it works": function(DatabankStore) {
                 assert.isFunction(DatabankStore);
