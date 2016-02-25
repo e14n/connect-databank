@@ -28,7 +28,8 @@
     "connect": "3.x",
     "step": "0.0.x",
     "vows": "^0.8.1",
-    "zombie": "^4.2.1"
+    "zombie": "^4.2.1",
+    "express-session": "^1.13.0"
   },
   "licenses": [
     {

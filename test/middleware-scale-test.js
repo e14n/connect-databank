@@ -25,8 +25,10 @@ var _ = require("underscore"),
   stream = require("stream"),
   util = require("util"),
   Logger = require("bunyan"),
-  session = require("session"),
+  connect = require("connect"),
+  session = require("express-session"),
   Browser = require("zombie"),
+  http = require("http"),
   Databank = databank.Databank;
 
 var suite = vows.describe("middleware interface");
@@ -69,6 +71,9 @@ suite.addBatch({
           if (db && db.disconnect) {
             db.disconnect(function(err) {});
           }
+          if (store && store.close) {
+            store.close();
+          }
         },
         "it works": function(err, store, db) {
           assert.ifError(err);
@@ -78,10 +83,9 @@ suite.addBatch({
         "and we start an app using the store": {
           topic: function(store) {
             var cb = this.callback,
-            app = session();
+            app = connect();
 
-            app.use(session.cookieParser());
-            app.use(session.session({secret: "test", store: store}));
+            app.use(session({secret: "test", store: store}));
 
             app.use(function(req, res) {
               var cb;
@@ -101,17 +105,24 @@ suite.addBatch({
               }
             });
 
-            app.listen(1516, function() {
-              cb(null, app);
+            server = http.createServer(app);
+
+            server.listen(1516, function() {
+              cb(null, server);
             });
           },
-          "it works": function(err, app) {
+          teardown: function(server) {
+            if (server && server.close) {
+              server.close(function(err) {});
+            }
+          },
+          "it works": function(err, server) {
             assert.ifError(err);
-            assert.ok(app);
+            assert.ok(server);
           },
           "and we browse around the app with a few browsers": {
 
-            topic: function(app, store) {
+            topic: function(server, store) {
 
               var callback = this.callback,
               MAXBROWSERS = 100,
@@ -122,11 +133,20 @@ suite.addBatch({
               lasts = [],
               i, j, k,
               sidOf = function(br) {
-                var objs = br.cookies.select("session.sid");
+                var val, sid;
+                var objs = br.cookies.select("connect.sid");
                 if (!objs || objs.length === 0) {
                   return null;
                 } else {
-                  return decodeURIComponent(objs[0].value).substr(2, 24);
+                  val = objs[0].value;
+                  decoded = decodeURIComponent(val);
+                  match = decoded.match(/^s:(.+)\./);
+                  if (match) {
+                    sid = match[1];
+                    return sid;
+                  } else {
+                    return null;
+                  }
                 }
               },
               wanderAround = function(br, id, pagesLeft, callback) {
@@ -157,9 +177,22 @@ suite.addBatch({
                 function(err, browsers, ps) {
                   var group = this.group();
                   if (err) throw err;
-                  _.each(browsers, function(br) {
+                  _.each(browsers, function(br, i) {
                     var sid = sidOf(br);
-                    store.get(sid, group());
+                    var cb = group();
+                    if (sid) {
+                      store.get(sid, function(err, session) {
+                        if (err) {
+                          cb(err);
+                        } else if (_.isNull(session)) {
+                          cb(new Error("No such session for sid " + sid));
+                        } else {
+                          cb(null, session);
+                        }
+                      });
+                    } else {
+                      cb(new Error("No sid for browser " + i));
+                    }
                   });
                 },
                 function(err, sessions) {
@@ -178,8 +211,9 @@ suite.addBatch({
               var i;
               assert.ifError(err);
               for (i = 0; i < sessions.length; i++) {
-                assert.equal(sessions[i].hits, counts[i]);
-                assert.equal(sessions[i].lastUrl, "/"+lasts[i]);
+                assert.isObject(sessions[i], "Session #" + i + " is not an object");
+                assert.equal(sessions[i].hits, counts[i], "hits for session #" + i + " is " + sessions[i].hits + ", expected " + counts[i]);
+                assert.equal(sessions[i].lastUrl, "/"+lasts[i], "lastUrl for session #" + i + " is " + sessions[i].lastUrl + ", expected /" + lasts[i]);
               }
             }
           }

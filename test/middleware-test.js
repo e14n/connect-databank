@@ -24,7 +24,8 @@ var assert = require("assert"),
   stream = require("stream"),
   util = require("util"),
   Logger = require("bunyan"),
-  session = require("session"),
+  connect = require("connect"),
+  session = require("express-session"),
   Browser = require("zombie"),
   Databank = databank.Databank;
 
@@ -79,7 +80,7 @@ suite.addBatch({
         "and we start an app using the store": {
           topic: function(store) {
             var cb = this.callback,
-            app = session();
+            app = connect();
 
             // We use this to leak the session data
 
@@ -88,8 +89,7 @@ suite.addBatch({
               this.callback = callback;
             };
 
-            app.use(session.cookieParser());
-            app.use(session.session({secret: "test", store: store}));
+            app.use(session({secret: "test", store: store}));
 
             app.use(function(req, res) {
               var cb;
