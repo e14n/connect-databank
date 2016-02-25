@@ -119,6 +119,7 @@ suite.addBatch({
         "it has a length() method": methodContext("length"),
         "it has a clear() method": methodContext("clear"),
         "it has a cleanup() method": methodContext("cleanup"),
+        "it has a close() method": methodContext("close"),
         "and we check the object type": {
           topic: function(store, DatabankStore) {
             var cb = this.callback;
