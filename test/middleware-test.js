@@ -18,6 +18,7 @@
 
 
 var assert = require("assert"),
+  http = require("http"),
   vows = require("vows"),
   databank = require("databank"),
   Step = require("step"),
@@ -109,26 +110,34 @@ suite.addBatch({
               }
             });
 
-            app.listen(1516, function() {
-              cb(null, app);
+            server = http.createServer(app);
+            server.app = app;
+
+            server.listen(1516, function() {
+              cb(null, server);
             });
           },
-          "it works": function(err, app) {
+          "it works": function(err, server) {
             assert.ifError(err);
-            assert.ok(app);
+            assert.ok(server);
+          },
+          "teardown": function(server) {
+            if (server && server.close) {
+              server.close(function(err) {});
+            }
           },
           "and we create a browser": {
-            topic: function(app, store) {
+            topic: function(server, store) {
               return new Browser();
             },
             "it works": function(br) {
               assert.isObject(br);
             },
-            "and we browse to the app": {
-              topic: function(br, app, store) {
+            "and we browse to the server": {
+              topic: function(br, server, store) {
                 var cb = this.callback,
                 sess = null;
-                app.setCallback(function(err, session) {
+                server.app.setCallback(function(err, session) {
                   sess = session;
                 });
                 br.visit("http://localhost:1516/first", function(err, browser) {
@@ -142,10 +151,10 @@ suite.addBatch({
                 assert.equal(session.lastUrl, "/first");
               },
               "and we browse again": {
-                topic: function(old, br, app, store) {
+                topic: function(old, br, server, store) {
                   var cb = this.callback,
                   sess = null;
-                  app.setCallback(function(err, session) {
+                  server.app.setCallback(function(err, session) {
                     sess = session;
                   });
                   br.visit("http://localhost:1516/second", function(err, browser) {
