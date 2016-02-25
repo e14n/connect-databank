@@ -9,7 +9,7 @@
   "main": "./lib/connect-databank",
   "repository": {
     "type": "git",
-    "url": "https://github.com/evanp/connect-databank.git"
+    "url": "https://github.com/e14n/connect-databank.git"
   },
   "keywords": [
     "connect",
