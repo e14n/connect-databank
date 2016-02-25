@@ -54,7 +54,7 @@ var makeStore = function(DatabankStore) {
     var callback = this.callback,
         db = Databank.get("memory", {});
 
-    db.session({}, function(err) {
+    db.connect({}, function(err) {
         var store;
         if (err) {
             callback(err, null);

@@ -52,7 +52,7 @@ suite.addBatch({
 		    var callback = this.callback,
 		        db = Databank.get(tc.driver, tc.params);
 
-		    db.session(tc.params, function(err) {
+		    db.connect(tc.params, function(err) {
 			var store;
 			if (err) {
 			    callback(err, null);

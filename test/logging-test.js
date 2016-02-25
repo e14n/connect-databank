@@ -90,7 +90,7 @@ suite.addBatch({
 					  stream: str});
 		        
 
-		    db.session({}, function(err) {
+		    db.connect({}, function(err) {
 			var store;
 			if (err) {
 			    callback(err, null);
@@ -220,7 +220,7 @@ suite.addBatch({
 		        db = Databank.get("memory", {});
 		        
 
-		    db.session({}, function(err) {
+		    db.connect({}, function(err) {
 			var store;
 			if (err) {
 			    callback(err, null);

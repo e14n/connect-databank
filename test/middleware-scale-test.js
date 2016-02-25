@@ -51,7 +51,7 @@ suite.addBatch({
 		    var callback = this.callback,
 		        db = Databank.get("memory", {});
 
-		    db.session({}, function(err) {
+		    db.connect({}, function(err) {
 			var store;
 			if (err) {
 			    callback(err, null);
@@ -66,8 +66,8 @@ suite.addBatch({
 		    });
 		},
                 teardown: function(store, db) {
-		    if (db && db.dissession) {
-			db.dissession(function(err) {});
+		    if (db && db.disconnect) {
+			db.disconnect(function(err) {});
 		    }
 		},
                 "it works": function(err, store, db) {

@@ -54,7 +54,7 @@ suite.addBatch({
 		               var callback = this.callback,
                       db = Databank.get(tc.driver, tc.params);
 
-		    db.session(tc.params, function(err) {
+		    db.connect(tc.params, function(err) {
 			var store;
 			if (err) {
 			    callback(err, null);
@@ -70,7 +70,7 @@ suite.addBatch({
 		},
                 teardown: function(store, db) {
 		    if (db) {
-			db.dissession(function(err) {});
+			db.disconnect(function(err) {});
 		    }
 		},
                 "it works": function(err, store, db) {
