@@ -54,25 +54,28 @@ suite.addBatch({
 		               var callback = this.callback,
                       db = Databank.get(tc.driver, tc.params);
 
-		    db.connect(tc.params, function(err) {
-			var store;
-			if (err) {
-			    callback(err, null);
-			} else {
-			    try {
-				store = new DatabankStore(db, null, 1000);
-				callback(null, store, db);
-			    } catch (e) {
-				callback(e, null, null);
-			    }
-			}
-		    });
-		},
+                      db.connect(tc.params, function(err) {
+                        var store;
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            try {
+                        	    store = new DatabankStore(db, null, 1000);
+                        	    callback(null, store, db);
+                            } catch (e) {
+                        	    callback(e, null, null);
+                            }
+                        }
+                      });
+		            },
                 teardown: function(store, db) {
-		    if (db) {
-			db.disconnect(function(err) {});
-		    }
-		},
+                  if (store) {
+                    store.close(function(err) {});
+                  }
+          		    if (db) {
+          			    db.disconnect(function(err) {});
+          		    }
+          		  },
                 "it works": function(err, store, db) {
                     assert.ifError(err);
                     assert.isObject(store);
