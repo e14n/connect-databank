@@ -18,8 +18,8 @@
     ],
     "dependencies" : {
         "async": "0.2.x",
-	"underscore":  "1.4.x",
-	"databank":  "0.19.x",
+        "underscore":  "1.4.x",
+        "databank":  "0.19.x",
         "set-immediate": "0.1.x",
         "node-uuid": "1.4.x"
     },
