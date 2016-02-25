@@ -12,24 +12,24 @@
         "url": "https://github.com/evanp/connect-databank.git"
     },
     "keywords": [
-        "session",
+        "connect",
         "session",
         "databank"
     ],
     "dependencies" : {
         "async": "0.2.x",
-	      "underscore":  "1.4.x",
-	      "databank":  "0.19.x",
+        "underscore":  "1.4.x",
+        "databank":  "0.19.x",
         "set-immediate": "0.1.x",
-        "node-uuid": "1.4.x",
-        "express-session": "1.10.x"
+        "node-uuid": "1.4.x"
     },
     "devDependencies": {
         "vows":  "0.7.x",
+        "connect": "3.x",
         "zombie": "2.0.x",
         "bunyan": "0.17.x",
         "step": "0.0.x"
-    },
+    },  
     "licenses": [
         {
             "type": "Apache 2.0",
