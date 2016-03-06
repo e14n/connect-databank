@@ -1,12 +1,13 @@
 connect-databank
 ================
 
-Use any database that databank supports as a session session store
+Use any database that databank supports as a session store
 
 License
 -------
 
 Copyright 2012, 2015, E14N Inc.
+Copyright 2016, Fuzzy.io.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,7 +32,7 @@ This module will let you use any of those databases as a
 [session](https://npmjs.org/package/session) session backend.
 
 I think it's particularly useful if you're distributing software and
-you don't want to make your users depend on some particular session
+you don't want to make your users depend on some particular
 session backend.
 
 How to use it
@@ -66,9 +67,9 @@ Try something like this.
 
 	log = new Logger({name: "myapp"});
 
-        // cleanup session store every 5 minutes
+  // cleanup session store every 5 minutes
 
-        store = new DatabankStore(db, log, 600000);
+  store = new DatabankStore(db, log, 600000);
 
 	app = expess();
 	app.use(session.cookieParser());
@@ -94,8 +95,8 @@ External API
   is a session GC interval in milliseconds; if it's not falsy the
   store will garbage-collect old unused sessions this often.
 
-  You pass the DatabankStore to `session.session()` as the `store`
-  parameter. See the [session session
+  You pass the DatabankStore to `session()` as the `store`
+  parameter. See the [express session
   middleware](http://www.senchalabs.org/session/middleware-session.html)
   documentation for more details.
 
@@ -152,6 +153,6 @@ Bonus features
   an `err`.
 
   NOTE that you have to have a `maxAge` on your `cookie` parameter for
-  `session.session()` for this to work. It won't clean up sessions
+  `session()` for this to work. It won't clean up sessions
   that never expire -- browser sessions -- even if they're very, very
   old.
