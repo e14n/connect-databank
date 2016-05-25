@@ -20,7 +20,7 @@
     "async": "^1.5.2",
     "databank": "0.19.x",
     "node-uuid": "1.4.x",
-    "set-immediate": "0.1.x",
+    "setimmediate": "^1.0.4",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
